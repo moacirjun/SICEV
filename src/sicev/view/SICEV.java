@@ -14,7 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sicev.controller.FXMLMainController;
@@ -30,15 +29,12 @@ public class SICEV extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-//        Parent root = FXMLLoader.load(getClass().getResource("FXMLMain.fxml"));
-//        Scene scene = new Scene(root);
-//        primaryStage.setScene(scene);
-        
         mainStage = primaryStage;
         mainStage.setTitle("SICEV");
         mainStage.setMaximized(true);
+        
         gotoMainPage();
-
+        
         primaryStage.show();
     }
 
@@ -85,9 +81,9 @@ public class SICEV extends Application {
         InputStream in = SICEV.class.getResourceAsStream(fxml);
         loader.setBuilderFactory(new JavaFXBuilderFactory());
         loader.setLocation(SICEV.class.getResource(fxml));
-        AnchorPane page;
+        Parent page;
         try {
-            page = (AnchorPane) loader.load(in);
+            page = loader.load(in);
         } finally {
             in.close();
         } 

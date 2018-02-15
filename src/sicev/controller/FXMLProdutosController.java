@@ -18,6 +18,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,6 +32,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
 
 /**
@@ -40,6 +43,7 @@ import javafx.util.converter.NumberStringConverter;
 public class FXMLProdutosController implements Initializable {
     
     @FXML private GridPane paneCampos;
+    @FXML private VBox tableContainer;
     @FXML private TableView<ModelProdutos> tabelaProdutos;
     @FXML private ToggleButton btnNovo;
     @FXML private ToggleButton btnEditar;
@@ -56,9 +60,12 @@ public class FXMLProdutosController implements Initializable {
     private final DaoProdutos daoProduto = new DaoProdutos();
     private final ModelProdutos modelProdutos = new ModelProdutos();
     
-    private BooleanProperty tableSelectionIsNull = new SimpleBooleanProperty();
-    private BooleanProperty btnNovoSelected = new SimpleBooleanProperty();
-    private BooleanProperty btnEditarSelected = new SimpleBooleanProperty();
+    private final BooleanProperty tableSelectionIsNull = new SimpleBooleanProperty();
+    private final BooleanProperty btnNovoSelected = new SimpleBooleanProperty();
+    private final BooleanProperty btnEditarSelected = new SimpleBooleanProperty();
+    
+    private ObservableList<ModelProdutos> listaProdutos;
+    private FilteredList<ModelProdutos> filteredListProds;
     
     private SICEV application;
     
@@ -100,7 +107,16 @@ public class FXMLProdutosController implements Initializable {
         paneCampos.disableProperty().bind(
                 ( btnNovoSelected.not() ).and(
                 ( btnEditarSelected.not() )));
-        tabelaProdutos.disableProperty().bind(btnNovoSelected.or( btnEditarSelected ));
+        tableContainer.disableProperty().bind(btnNovoSelected.or( btnEditarSelected ));
+        
+        tableSelectionIsNull.addListener( //Limpa os campos quando nenhuma linha 
+                                          //da tabela estiver selecionada  
+                (ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    if (newValue) {
+                        setModelProdutosBinds(new ModelProdutos());
+                    }
+                });
+        
         
         //Cria um bind bidirecional entre os campos e o objeto "modelProdutos"
         edtNome.textProperty().bindBidirectional(
@@ -118,11 +134,30 @@ public class FXMLProdutosController implements Initializable {
         edtEstoqueMin.textProperty().bindBidirectional(
                 modelProdutos.proEstoqueMinProperty(), new NumberStringConverter());
         
-        /**
-         * Bind automático dos campos ao selecionar uma linha na tabela
-         */
+        
+        //Bind automático dos campos ao selecionar uma linha na tabela
         tabelaProdutos.getSelectionModel().selectedItemProperty().
                 addListener(TableListener);
+        
+        //Set the filter Predicate whenever the filter changes.
+        edtPesquisar.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredListProds.setPredicate(produto -> {
+                // If filter text is empty, display all produtos.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (produto.getProNome().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches first name.
+                } else if (produto.getProNome().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches last name.
+                }
+                return false; // Does not match.
+            });
+        });
         
         //Configura a tela
         setStatusTelaExibir();        
@@ -222,6 +257,12 @@ public class FXMLProdutosController implements Initializable {
         setModelProdutosBinds( tabelaProdutos.getSelectionModel().getSelectedItem() );
     }
     
+    @FXML
+    private void handleBtnRemoveFiltro (ActionEvent event) {
+        edtPesquisar.clear();
+        edtPesquisar.requestFocus();
+    }
+    
     public void setApp (SICEV application) {
         this.application = application;
     }
@@ -303,14 +344,23 @@ public class FXMLProdutosController implements Initializable {
     }
     
     public void carregarProdutos() {
-        ObservableList<ModelProdutos> listaProdutos = FXCollections.observableList(getAllProdutos());
+        listaProdutos = FXCollections.observableList(getAllProdutos());
         
+        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        filteredListProds = new FilteredList<>(listaProdutos, p -> true);
+
+        // 2. Wrap the FilteredList in a SortedList. 
+        SortedList<ModelProdutos> sortedData = new SortedList<>(filteredListProds);
+
+        // 3. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(tabelaProdutos.comparatorProperty());    
         
         //Remove o changeListener da tabela enquanto atualiza seus items
         tabelaProdutos.getSelectionModel().selectedItemProperty().
                 removeListener(TableListener);
         
-        tabelaProdutos.setItems(listaProdutos);
+        // 4. Add sorted (and filtered) data to the table.
+        tabelaProdutos.setItems(sortedData);
         
         tabelaProdutos.getSelectionModel().selectedItemProperty().
                 addListener(TableListener);

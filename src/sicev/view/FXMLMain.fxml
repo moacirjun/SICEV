@@ -7,33 +7,36 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" minHeight="500.0" minWidth="500.0" prefHeight="-1.0" prefWidth="-1.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.FXMLMainController">
-  <children>
-    <BorderPane layoutX="0.0" layoutY="0.0" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
-      <top>
-        <MenuBar prefWidth="-1.0">
-          <menus>
-            <Menu mnemonicParsing="false" text="Produtos">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuProdutosAction" text="Gerenciador" fx:id="btnMenuProdutos" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Delete" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-              <items>
-                <MenuItem mnemonicParsing="false" text="About" />
-              </items>
-            </Menu>
-          </menus>
+
+    
+<BorderPane styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" 
+            xmlns="http://javafx.com/javafx/2.2" 
+            fx:controller="sicev.controller.FXMLMainController">
+    <stylesheets>
+        <URL value="@fxmlmain.css" />
+    </stylesheets>
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="Produtos">
+                  <items>
+                        <MenuItem mnemonicParsing="false" 
+                                  onAction="#handleBtnMenuProdutosAction" 
+                                  text="Gerenciador" fx:id="btnMenuProdutos" />
+                  </items>
+                </Menu>
+              <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                    </items>
+              </Menu>
+              <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About" />
+                    </items>
+              </Menu>
+            </menus>
         </MenuBar>
-      </top>
-    </BorderPane>
-  </children>
-  <stylesheets>
-    <URL value="@fxmlmain.css" />
-  </stylesheets>
-</AnchorPane>
+    </top>
+</BorderPane>
+
