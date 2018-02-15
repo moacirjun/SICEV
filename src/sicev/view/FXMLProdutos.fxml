@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="454.0" prefWidth="757.999977929685" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.FXMLProdutosController">
+  <children>
+    <BorderPane layoutX="0.0" layoutY="0.0" prefHeight="454.0" prefWidth="758.0">
+      <center>
+        <VBox prefHeight="200.0" prefWidth="100.0">
+          <children>
+            <GridPane fx:id="paneCampos" minHeight="-1.0" prefHeight="420.0" prefWidth="400.0">
+              <children>
+                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                  <children>
+                    <Label text="Código" />
+                    <TextField fx:id="edtCodigo" disable="true" prefWidth="200.0" />
+                  </children>
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x1" />
+                  </padding>
+                </VBox>
+                <VBox prefHeight="40.0" prefWidth="567.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                  <children>
+                    <Label text="Nome" />
+                    <TextField fx:id="edtNome" prefWidth="200.0" />
+                  </children>
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x0" />
+                  </padding>
+                </VBox>
+                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <children>
+                    <Label text="Valor" />
+                    <TextField fx:id="edtValor" prefWidth="200.0" />
+                  </children>
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x2" />
+                  </padding>
+                </VBox>
+                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <children>
+                    <Label text="Estoque" />
+                    <TextField fx:id="edtEstoque" prefWidth="200.0" />
+                  </children>
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x3" />
+                  </padding>
+                </VBox>
+                <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                  <children>
+                    <Label text="Estoque mín." />
+                    <TextField fx:id="edtEstoqueMin" prefWidth="200.0" />
+                  </children>
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x4" />
+                  </padding>
+                </VBox>
+              </children>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="188.0" minWidth="10.0" prefWidth="56.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="284.0" minWidth="10.0" prefWidth="153.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="288.0" minWidth="10.0" prefWidth="139.0" />
+              </columnConstraints>
+              <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x5" />
+              </padding>
+              <rowConstraints>
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="47.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="47.0" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="true" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" valignment="TOP" vgrow="ALWAYS" />
+              </rowConstraints>
+              <VBox.margin>
+                <Insets top="57.0" />
+              </VBox.margin>
+            </GridPane>
+            <HBox alignment="TOP_CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0">
+              <children>
+                <Button fx:id="btnSalvar" mnemonicParsing="false" onAction="#handleBtnSalvarAction" prefWidth="94.0" text="Salvar">
+                  <graphic>
+                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@../images/icons8_Save_30px.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+                <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#handleBtnCancelarAction" prefWidth="94.0" text="Cancelar">
+                  <graphic>
+                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@../images/icons8_Cancel_30px.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+              </children>
+              <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x6" />
+              </padding>
+              <VBox.margin>
+                <Insets bottom="49.0" />
+              </VBox.margin>
+            </HBox>
+          </children>
+        </VBox>
+      </center>
+      <left>
+        <VBox prefHeight="460.0" prefWidth="-1.0">
+          <children>
+            <HBox minHeight="-Infinity" minWidth="-1.0" prefHeight="57.0" prefWidth="-1.0">
+              <children>
+                <VBox prefHeight="-1.0" prefWidth="312.0">
+                  <children>
+                    <Label text="Pesquisar" />
+                    <TextField fx:id="edtPesquisar" prefWidth="200.0" />
+                  </children>
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x7" />
+                  </padding>
+                </VBox>
+                <Pane maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="47.0" prefWidth="-1.0">
+                  <children>
+                    <Button layoutX="5.0" layoutY="20.0" maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="-1.0" text="Pesquisar" />
+                  </children>
+                  <padding>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x8" />
+                  </padding>
+                </Pane>
+              </children>
+              <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x9" />
+              </padding>
+              <VBox.margin>
+                <Insets />
+              </VBox.margin>
+            </HBox>
+            <TableView fx:id="tabelaProdutos" prefHeight="-1.0" prefWidth="-1.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="Código">
+                  <cellValueFactory>
+                    <PropertyValueFactory property="idProduto" />
+                  </cellValueFactory>
+                </TableColumn>
+                <TableColumn prefWidth="75.0" text="Produto">
+                  <cellValueFactory>
+                    <PropertyValueFactory property="proNome" />
+                  </cellValueFactory>
+                </TableColumn>
+                <TableColumn prefWidth="75.0" text="Valor">
+                  <cellValueFactory>
+                    <PropertyValueFactory property="proValor" />
+                  </cellValueFactory>
+                </TableColumn>
+                <TableColumn prefWidth="75.0" text="Estoque">
+                  <cellValueFactory>
+                    <PropertyValueFactory property="proEstoque" />
+                  </cellValueFactory>
+                </TableColumn>
+                <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="98.0" text="Estoque min.">
+                  <cellValueFactory>
+                    <PropertyValueFactory property="proEstoqueMin" />
+                  </cellValueFactory>
+                </TableColumn>
+              </columns>
+              <VBox.margin>
+                <Insets left="10.0" right="10.0" />
+              </VBox.margin>
+            </TableView>
+            <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+              <children>
+                <ToggleButton fx:id="btnNovo" mnemonicParsing="false" onAction="#handleBtnNovoAction" prefWidth="94.0" text="Novo">
+                  <graphic>
+                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@../images/icons8_Plus_30px.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="btnEditar" mnemonicParsing="false" onAction="#handleBtEditarAction" prefWidth="94.0" text="Editar">
+                  <graphic>
+                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@../images/icons8_Edit_30px.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </ToggleButton>
+                <Button fx:id="btnExcluir" mnemonicParsing="false" onAction="#handleBtnExcluirAction" prefWidth="94.0" text="Excuir">
+                  <graphic>
+                    <ImageView fitHeight="23.9998779296875" fitWidth="23.9998779296875" pickOnBounds="true" preserveRatio="true">
+                      <image>
+                        <Image url="@../images/icons8_Delete_30px.png" />
+                      </image>
+                    </ImageView>
+                  </graphic>
+                </Button>
+              </children>
+              <padding>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+              </padding>
+            </HBox>
+          </children>
+        </VBox>
+      </left>
+    </BorderPane>
+  </children>
+  <stylesheets>
+    <URL value="@fxmlprodutos.css" />
+  </stylesheets>
+</AnchorPane>
