@@ -6,26 +6,25 @@
 package sicev.controller;
 
 import java.io.IOException;
-
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
+import sicev.view.SICEV;
 
 /**
+ * FXML Controller class
  *
  * @author Moacir
  */
-public class FXMLDocumentController implements Initializable {
-    
+public class ClientesController implements Initializable {
+
     @FXML private AnchorPane AnchorPane;
     @FXML private TextField edtCodigo;
     @FXML private TextField edtNome;
@@ -38,24 +37,25 @@ public class FXMLDocumentController implements Initializable {
     @FXML private TableView tblClientes;
     @FXML private Button btnTest;
     
+    private SICEV application;
+    
     @FXML
     private void handleButtonAction(ActionEvent event) throws IOException {
-//        Stage stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-//        Stage stage = (Stage) btnTest.getScene().getWindow();
-//        System.out.println(getClass());
-//        System.out.println(getClass().getClassLoader());
-//        System.out.println(getClass().getResource("FXMLProdutos.fxml"));
-//        
-//        Parent root = FXMLLoader.load(getClass().getResource("../view/FXMLProdutos.fxml"));
-//        
-//        Scene scene = new Scene(root);
-//        stage.setScene(scene);
-//        stage.show();
+                    
     }
-
+    
+    /**
+     * Initializes the controller class.
+     * @param url
+     * @param rb 
+     */
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+    }  
+    
+    public void setApp (SICEV app) {
+        this.application = app;
     }
     
 }

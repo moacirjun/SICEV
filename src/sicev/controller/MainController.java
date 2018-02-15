@@ -19,16 +19,23 @@ import javafx.scene.control.MenuItem;
  *
  * @author Moacir
  */
-public class FXMLMainController implements Initializable {
+public class MainController implements Initializable {
 
     private SICEV application;
     
     @FXML
     private MenuItem btnMenuProdutos;
+    @FXML
+    private MenuItem btnMenuClientes;
     
     @FXML
     private void handleBtnMenuProdutosAction (ActionEvent  event) {
         this.application.openProdutos();
+    }
+    
+    @FXML
+    private void handleBtnMenuClientesAction (ActionEvent  event) {
+        this.application.openClientes();
     }
     
     /**

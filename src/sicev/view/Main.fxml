@@ -11,7 +11,7 @@
     
 <BorderPane styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" 
             xmlns="http://javafx.com/javafx/2.2" 
-            fx:controller="sicev.controller.FXMLMainController">
+            fx:controller="sicev.controller.MainController">
     <stylesheets>
         <URL value="@fxmlmain.css" />
     </stylesheets>
@@ -25,9 +25,11 @@
                                   text="Gerenciador" fx:id="btnMenuProdutos" />
                   </items>
                 </Menu>
-              <Menu mnemonicParsing="false" text="Edit">
+              <Menu mnemonicParsing="false" text="Clientes">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem mnemonicParsing="false" 
+                                  onAction="#handleBtnMenuClientesAction"
+                                  text="Gerenciador" fx:id="btnMenuClientes"/>
                     </items>
               </Menu>
               <Menu mnemonicParsing="false" text="Help">

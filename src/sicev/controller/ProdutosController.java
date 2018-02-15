@@ -40,7 +40,7 @@ import javafx.util.converter.NumberStringConverter;
  *
  * @author Moacir
  */
-public class FXMLProdutosController implements Initializable {
+public class ProdutosController implements Initializable {
     
     @FXML private GridPane paneCampos;
     @FXML private VBox tableContainer;

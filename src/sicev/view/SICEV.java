@@ -16,8 +16,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sicev.controller.FXMLMainController;
-import sicev.controller.FXMLProdutosController;
+import sicev.controller.ClientesController;
+import sicev.controller.MainController;
+import sicev.controller.ProdutosController;
 
 /**
  *
@@ -49,11 +50,31 @@ public class SICEV extends Application {
         try {
             Stage newStage = new Stage();
             
-            FXMLProdutosController produtos = 
-                    (FXMLProdutosController) loadSceneOnStage("FXMLProdutos.fxml", newStage);
+            ProdutosController produtos = 
+                    (ProdutosController) loadSceneOnStage("Produtos.fxml", newStage);
             produtos.setApp(this);
             
             newStage.sizeToScene();
+            newStage.setResizable(false);
+            newStage.initOwner(mainStage);
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.showAndWait();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(SICEV.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void openClientes() {
+        try {
+            Stage newStage = new Stage();
+            
+            ClientesController produtos = 
+                    (ClientesController) loadSceneOnStage("Clientes.fxml", newStage);
+            produtos.setApp(this);
+            
+            newStage.sizeToScene();
+            newStage.setResizable(false);
             newStage.initOwner(mainStage);
             newStage.initModality(Modality.APPLICATION_MODAL);
             newStage.showAndWait();
@@ -65,7 +86,7 @@ public class SICEV extends Application {
     
     private void gotoMainPage() {
         try {
-            FXMLMainController main = (FXMLMainController) loadSceneOnStage("FXMLMain.fxml");
+            MainController main = (MainController) loadSceneOnStage("Main.fxml");
             main.setApp(this);
         } catch (Exception ex) {
             Logger.getLogger(SICEV.class.getName()).log(Level.SEVERE, null, ex);

@@ -15,7 +15,7 @@
 <BorderPane id="BorderPane" styleClass="mainFxmlClass" prefHeight="454.0" 
             prefWidth="758.0" xmlns:fx="http://javafx.com/fxml/1" 
             xmlns="http://javafx.com/javafx/2.2" 
-            fx:controller="sicev.controller.FXMLProdutosController">
+            fx:controller="sicev.controller.ProdutosController">
     <stylesheets>
         <URL value="@fxmlprodutos.css" />
     </stylesheets>
