@@ -163,108 +163,31 @@ public class ProdutosController implements Initializable {
         setStatusTelaExibir();        
     }
     
-    @FXML
-    private void handleBtnSalvarAction (ActionEvent event) {
-        
-        if ( btnNovoSelected.get() ) {
-            
-            //Cadastro de novos produtos
-            if ( salvarProdutos(modelProdutos) > 0 ) {
-                showAlert(AlertType.INFORMATION, "Produto cadastrado com sucesso!");
-                carregarProdutos();
-            }   
-            else {
-                showAlert(AlertType.WARNING, "Não foi possível cadastrar o produto");
-            }
-            setStatusTelaExibir(-2);
-            setModelProdutosBinds( tabelaProdutos.getSelectionModel().getSelectedItem() );
-        }
-        else if ( btnEditarSelected.get() ) {
-            
-            //Atualiza o produto selecionado na tabela
-            if ( atualizarProduto(modelProdutos) ) {
-                showAlert(AlertType.INFORMATION, "Atualizações salvas com sucesso!");
-                carregarProdutos();
-            }   
-            else {
-                showAlert(AlertType.WARNING, "Não foi possível cadastrar as atualizações");
-            }
-
-            setStatusTelaExibir(-2);
-            setModelProdutosBinds( tabelaProdutos.getSelectionModel().getSelectedItem() );
-        }
-    }
-    
-    @FXML
-    private void handleBtnNovoAction (ActionEvent event) {        
-        
-        //passa um ModelProduto vazio para limpar os campos
-        setModelProdutosBinds( new ModelProdutos() );
-        
-        //Retira o bind do modelProdutos com esse ModelProduto vazio
-        setModelProdutosBinds(null);
-        
-        //Comfiguração dos componentes da tela
-        setStatusTelaInserir();
-    }
-    
-    @FXML
-    private void handleBtEditarAction (ActionEvent event) {
-        //Retira o bind do modelProdutos para que seja possível a alteração
-        setModelProdutosBinds(null);
-        
-        setStatusTelaEditar();
-    }
-    
-    @FXML
-    private void handleBtnExcluirAction (ActionEvent event) {
-        
-        if (confirmAlert("Confirmar a exclusão do produto?") == ButtonBar.ButtonData.YES) {
-            
-            int newIndex = 0;
-            
-            if ( excluirProduto(tabelaProdutos.getSelectionModel().
-                    getSelectedItem().getIdProduto()) ) {
-                
-                //Guarda o index da linha anterior ou posterior à linha excluída
-                int curIndex = tabelaProdutos.getSelectionModel().getSelectedIndex();
-                if ( curIndex ==  0) {
-                    tabelaProdutos.getSelectionModel().selectNext();
-                }
-                else {
-                    tabelaProdutos.getSelectionModel().selectPrevious();
-                }
-                newIndex = tabelaProdutos.getSelectionModel().getSelectedIndex();
-                
-                //Recarrega os produtos do banco
-                carregarProdutos();
-                
-                showAlert(AlertType.INFORMATION, "Produto excuído com sucesso!");
-            }
-            else {
-                showAlert(AlertType.WARNING, "Não foi possível excluir o produto!");
-            }
-            
-            //Deixa a tela no mode de exibição
-            setStatusTelaExibir(newIndex);
-        }
-    }
-    
-    @FXML
-    private void handleBtnCancelarAction (ActionEvent event) {
-        //Retorna para p mode de exibição, e no produto selecionado na tabela
-        setStatusTelaExibir( tabelaProdutos.getSelectionModel().getSelectedIndex() );
-        setModelProdutosBinds( tabelaProdutos.getSelectionModel().getSelectedItem() );
-    }
-    
-    @FXML
-    private void handleBtnRemoveFiltro (ActionEvent event) {
-        edtPesquisar.clear();
-        edtPesquisar.requestFocus();
-    }
-    
     public void setApp (SICEV application) {
         this.application = application;
+    }
+    
+    public void carregarProdutos() {
+        listaProdutos = FXCollections.observableList(getAllProdutos());
+        
+        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        filteredListProds = new FilteredList<>(listaProdutos, p -> true);
+
+        // 2. Wrap the FilteredList in a SortedList. 
+        SortedList<ModelProdutos> sortedData = new SortedList<>(filteredListProds);
+
+        // 3. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(tabelaProdutos.comparatorProperty());    
+        
+        //Remove o changeListener da tabela enquanto atualiza seus items
+        tabelaProdutos.getSelectionModel().selectedItemProperty().
+                removeListener(TableListener);
+        
+        // 4. Add sorted (and filtered) data to the table.
+        tabelaProdutos.setItems(sortedData);
+        
+        tabelaProdutos.getSelectionModel().selectedItemProperty().
+                addListener(TableListener);
     }
     
     private void setModelProdutosBinds (ModelProdutos currentProd) {
@@ -322,50 +245,7 @@ public class ProdutosController implements Initializable {
         btnEditar.setOnAction((e) -> {handleBtEditarAction(e);});
     }
     
-    private void setStatusTelaInserir () {
-        
-        edtNome.requestFocus();
-        
-        //Botão
-        btnNovo.setOnAction((e) -> { //No próximo click o botao executa a ação 
-                                     //"Cancelar"
-            handleBtnCancelarAction(e);
-        });
-    }
-    
-    private void setStatusTelaEditar () {
-        edtNome.requestFocus();
-        edtNome.selectEnd();
-        //Botões
-        btnEditar.setOnAction((e) -> {//No próximo click o botao executa a ação 
-                                       //"Cancelar"
-            handleBtnCancelarAction(e);
-        });
-    }
-    
-    public void carregarProdutos() {
-        listaProdutos = FXCollections.observableList(getAllProdutos());
-        
-        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
-        filteredListProds = new FilteredList<>(listaProdutos, p -> true);
-
-        // 2. Wrap the FilteredList in a SortedList. 
-        SortedList<ModelProdutos> sortedData = new SortedList<>(filteredListProds);
-
-        // 3. Bind the SortedList comparator to the TableView comparator.
-        sortedData.comparatorProperty().bind(tabelaProdutos.comparatorProperty());    
-        
-        //Remove o changeListener da tabela enquanto atualiza seus items
-        tabelaProdutos.getSelectionModel().selectedItemProperty().
-                removeListener(TableListener);
-        
-        // 4. Add sorted (and filtered) data to the table.
-        tabelaProdutos.setItems(sortedData);
-        
-        tabelaProdutos.getSelectionModel().selectedItemProperty().
-                addListener(TableListener);
-    }
-    
+    /* ====================== Métodos da classe Dao ========================= */
     public int salvarProdutos(ModelProdutos pModelProduto) {
         return daoProduto.salvarProdutosDAO(pModelProduto);
     }
@@ -404,6 +284,116 @@ public class ProdutosController implements Initializable {
     public ArrayList<ModelProdutos> getAllProdutos() {
         return daoProduto.getAllProdutosDao();
     }
+    /* ====================================================================== */
+    
+    /* ==================== Eventos da Interface ============================ */
+    @FXML
+    private void handleBtnNovoAction (ActionEvent event) {        
+        
+        //passa um ModelProduto vazio para limpar os campos
+        setModelProdutosBinds( new ModelProdutos() );
+        
+        //Retira o bind do modelProdutos com esse ModelProduto vazio
+        setModelProdutosBinds(null);
+        
+        //Comfiguração dos componentes da tela
+        edtNome.requestFocus();
+        
+        //No próximo click o botao executa a ação "Cancelar"
+        btnNovo.setOnAction((e) -> { handleBtnCancelarAction(e); });
+    }
+    
+    @FXML
+    private void handleBtEditarAction (ActionEvent event) {
+        //Retira o bind do modelProdutos para que seja possível a alteração
+        setModelProdutosBinds(null);
+        
+        edtNome.requestFocus();
+        edtNome.selectEnd();
+        
+        //No próximo click o botao executa a ação "Cancelar"
+        btnEditar.setOnAction((e) -> { handleBtnCancelarAction(e); });
+    }
+    
+    @FXML
+    private void handleBtnExcluirAction (ActionEvent event) {
+        
+        if (confirmAlert("Confirmar a exclusão do produto?") == ButtonBar.ButtonData.YES) {
+            
+            int newIndex = 0;
+            
+            if ( excluirProduto(tabelaProdutos.getSelectionModel().
+                    getSelectedItem().getIdProduto()) ) {
+                
+                //Guarda o index da linha anterior ou posterior à linha excluída
+                int curIndex = tabelaProdutos.getSelectionModel().getSelectedIndex();
+                if ( curIndex ==  0) {
+                    tabelaProdutos.getSelectionModel().selectNext();
+                }
+                else {
+                    tabelaProdutos.getSelectionModel().selectPrevious();
+                }
+                newIndex = tabelaProdutos.getSelectionModel().getSelectedIndex();
+                
+                //Recarrega os produtos do banco
+                carregarProdutos();
+                
+                showAlert(AlertType.INFORMATION, "Produto excuído com sucesso!");
+            }
+            else {
+                showAlert(AlertType.WARNING, "Não foi possível excluir o produto!");
+            }
+            
+            //Deixa a tela no mode de exibição
+            setStatusTelaExibir(newIndex);
+        }
+    }
+    
+    @FXML
+    private void handleBtnSalvarAction (ActionEvent event) {
+        
+        if ( btnNovoSelected.get() ) {
+            
+            //Cadastro de novos produtos
+            if ( salvarProdutos(modelProdutos) > 0 ) {
+                showAlert(AlertType.INFORMATION, "Produto cadastrado com sucesso!");
+                carregarProdutos();
+            }   
+            else {
+                showAlert(AlertType.WARNING, "Não foi possível cadastrar o produto");
+            }
+            setStatusTelaExibir(-2);
+            setModelProdutosBinds( tabelaProdutos.getSelectionModel().getSelectedItem() );
+        }
+        else if ( btnEditarSelected.get() ) {
+            
+            //Atualiza o produto selecionado na tabela
+            if ( atualizarProduto(modelProdutos) ) {
+                showAlert(AlertType.INFORMATION, "Alterações salvas com sucesso!");
+                carregarProdutos();
+            }   
+            else {
+                showAlert(AlertType.WARNING, "Não foi possível cadastrar as alterações");
+            }
+
+            setStatusTelaExibir(-2);
+            setModelProdutosBinds( tabelaProdutos.getSelectionModel().getSelectedItem() );
+        }
+    }
+    
+    @FXML
+    private void handleBtnCancelarAction (ActionEvent event) {
+        //Retorna para p mode de exibição, e no produto selecionado na tabela
+        setStatusTelaExibir( tabelaProdutos.getSelectionModel().getSelectedIndex() );
+        setModelProdutosBinds( tabelaProdutos.getSelectionModel().getSelectedItem() );
+    }
+    
+    @FXML
+    private void handleBtnRemoveFiltro (ActionEvent event) {
+        edtPesquisar.clear();
+        edtPesquisar.requestFocus();
+    }
+    /* ====================================================================== */
     
     private void showAlert(AlertType tipo, String texto) {
         Alert alert = new Alert(tipo);

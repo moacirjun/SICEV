@@ -7,15 +7,16 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<BorderPane id="AnchorPane" prefHeight="430.0" prefWidth="823.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.ClientesController">
+<BorderPane id="AnchorPane" prefHeight="564.0" prefWidth="823.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.ClientesController">
   <center>
     <VBox prefHeight="200.0" prefWidth="100.0">
       <children>
-        <GridPane prefHeight="378.0" prefWidth="349.0">
+        <GridPane fx:id="paneCampos" prefHeight="378.0" prefWidth="349.0">
           <children>
             <VBox prefHeight="50.0" prefWidth="64.0" spacing="0.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
               <children>
@@ -46,14 +47,14 @@
             </VBox>
             <VBox padding="$x2" prefHeight="50.0" prefWidth="143.0" spacing="0.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
               <children>
-                <Label text="Ciadade" />
+                <Label text="Cidade" />
                 <TextField fx:id="edtCidade" prefWidth="137.0" />
               </children>
             </VBox>
             <VBox padding="$x2" prefHeight="50.0" prefWidth="72.0" spacing="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
               <children>
                 <Label text="UF" />
-                <ComboBox fx:id="cmbUF" blendMode="SRC_OVER" editable="false" prefHeight="21.0" prefWidth="66.0">
+                <ComboBox id="cmbUF" fx:id="cmbUf" blendMode="SRC_OVER" editable="false" prefHeight="21.0" prefWidth="66.0">
                   <items>
                     <FXCollections fx:factory="observableArrayList">
                       <String fx:value="AM" />
@@ -67,18 +68,18 @@
             <VBox maxHeight="-1.0" padding="$x2" prefHeight="50.0" prefWidth="109.0" spacing="0.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
               <children>
                 <Label text="CEP" />
-                <TextField fx:id="edtCEP" prefWidth="108.0" />
+                <TextField id="edtCEP" fx:id="edtCep" prefWidth="108.0" />
               </children>
             </VBox>
             <VBox padding="$x2" prefHeight="50.0" prefWidth="150.0" spacing="0.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
               <children>
                 <Label text="Telefone" />
-                <TextField fx:id="edtTel" prefWidth="123.0" />
+                <TextField id="edtTel" fx:id="edtTelefone" prefWidth="123.0" />
               </children>
             </VBox>
             <HBox alignment="BOTTOM_RIGHT" padding="$x2" prefHeight="50.0" prefWidth="228.0" spacing="10.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="3">
               <children>
-                <Button id="btnTest" mnemonicParsing="false" text="Salvar" textAlignment="LEFT" textOverrun="ELLIPSIS" wrapText="false">
+                <Button id="btnTest" fx:id="btnSalvar" mnemonicParsing="false" onAction="#handleBtnSalvarAction" text="Salvar" textAlignment="LEFT" textOverrun="ELLIPSIS" wrapText="false">
                   <graphic>
                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -90,7 +91,7 @@
                     <Color blue="0.000" green="0.000" red="0.200" fx:id="x1" />
                   </textFill>
                 </Button>
-                <Button fx:id="btnTest" mnemonicParsing="false" text="Cancelar" textAlignment="LEFT" textFill="$x1" textOverrun="ELLIPSIS" wrapText="false">
+                <Button id="btnTest" fx:id="btnCancelar" mnemonicParsing="false" onAction="#handleBtnCancelarAction" text="Cancelar" textAlignment="LEFT" textFill="$x1" textOverrun="ELLIPSIS" wrapText="false">
                   <graphic>
                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -125,19 +126,57 @@
     </VBox>
   </center>
   <left>
-    <GridPane hgap="0.0" prefHeight="390.0" prefWidth="454.0" BorderPane.alignment="CENTER">
+    <VBox prefHeight="-1.0" prefWidth="-1.0">
       <children>
-        <TableView fx:id="tblClientes" disable="false" editable="false" prefHeight="190.0" prefWidth="456.0" tableMenuButtonVisible="false" GridPane.columnIndex="0" GridPane.rowIndex="0">
-          <columns>
-            <TableColumn prefWidth="60.0" resizable="false" text="Cod." />
-            <TableColumn prefWidth="155.0" resizable="false" text="Nome" />
-            <TableColumn prefWidth="130.0" resizable="false" text="Endereço" />
-            <TableColumn prefWidth="108.0" resizable="false" text="Telefone" />
-          </columns>
-        </TableView>
-        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="228.0" spacing="10.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        <VBox fx:id="tableContainer" prefHeight="378.0" prefWidth="456.0" VBox.vgrow="ALWAYS">
           <children>
-            <Button id="btnTest" mnemonicParsing="false" onAction="#handleButtonAction" text="Novo" textAlignment="LEFT" textFill="$x1" textOverrun="ELLIPSIS" wrapText="false">
+            <HBox id="tabj" prefHeight="47.0" prefWidth="200.0" VBox.vgrow="SOMETIMES">
+              <children>
+                <VBox prefHeight="47.0" prefWidth="-1.0" HBox.hgrow="ALWAYS">
+                  <children>
+                    <Label text="Pesquisar" />
+                    <TextField fx:id="edtPesquisar" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                  </children>
+                  <padding>
+                    <Insets right="5.0" />
+                  </padding>
+                </VBox>
+                <Button fx:id="btnRemoveFiltro" mnemonicParsing="false" onAction="#handleBtnRemoveFiltro" prefWidth="60.0" text="Limpar" HBox.hgrow="SOMETIMES">
+                  <HBox.margin>
+                    <Insets top="16.0" />
+                  </HBox.margin>
+                </Button>
+              </children>
+            </HBox>
+            <TableView fx:id="tabelaClientes" disable="false" editable="false" prefHeight="236.0" prefWidth="456.0" tableMenuButtonVisible="false" VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn prefWidth="60.0" resizable="false" text="Cod." >
+                    <cellValueFactory>
+                        <PropertyValueFactory property="idCliente" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn prefWidth="155.0" resizable="false" text="Nome">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="nome" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn prefWidth="130.0" resizable="false" text="Endereço">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="endereco" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn prefWidth="108.0" resizable="false" text="Telefone">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="telefone" />
+                    </cellValueFactory>
+                </TableColumn>
+              </columns>
+            </TableView>
+          </children>
+        </VBox>
+        <HBox alignment="CENTER" prefHeight="50.0" prefWidth="456.0" spacing="10.0" VBox.vgrow="SOMETIMES">
+          <children>
+            <ToggleButton fx:id="btnNovo" mnemonicParsing="false" onAction="#handleBtnNovoAction" text="Novo">
               <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                   <image>
@@ -145,8 +184,8 @@
                   </image>
                 </ImageView>
               </graphic>
-            </Button>
-            <Button id="btnTest" mnemonicParsing="false" text="Editar" textAlignment="LEFT" textFill="$x1" textOverrun="ELLIPSIS" wrapText="false">
+            </ToggleButton>
+            <ToggleButton fx:id="btnEditar" mnemonicParsing="false" onAction="#handleBtEditarAction" text="Editar">
               <graphic>
                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                   <image>
@@ -154,8 +193,8 @@
                   </image>
                 </ImageView>
               </graphic>
-            </Button>
-            <Button mnemonicParsing="false" text="Excluir">
+            </ToggleButton>
+            <Button fx:id="btnExcluir" mnemonicParsing="false" onAction="#handleBtnExcluirAction" text="Excluir">
               <graphic>
                 <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                   <image>
@@ -170,17 +209,10 @@
           </padding>
         </HBox>
       </children>
-      <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints maxHeight="374.0" minHeight="10.0" prefHeight="368.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="169.0" minHeight="10.0" prefHeight="52.0" vgrow="SOMETIMES" />
-      </rowConstraints>
-      <BorderPane.margin>
+      <padding>
         <Insets left="10.0" right="10.0" top="10.0" />
-      </BorderPane.margin>
-    </GridPane>
+      </padding>
+    </VBox>
   </left>
   <stylesheets>
     <URL value="@clientes.css" />
