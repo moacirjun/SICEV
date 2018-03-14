@@ -7,38 +7,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-    
-<BorderPane styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" 
-            xmlns="http://javafx.com/javafx/2.2" 
-            fx:controller="sicev.controller.MainController">
-    <stylesheets>
-        <URL value="@fxmlmain.css" />
-    </stylesheets>
-    <top>
-        <MenuBar>
-            <menus>
-                <Menu mnemonicParsing="false" text="Produtos">
-                  <items>
-                        <MenuItem mnemonicParsing="false" 
-                                  onAction="#handleBtnMenuProdutosAction" 
-                                  text="Gerenciador" fx:id="btnMenuProdutos" />
-                  </items>
-                </Menu>
-              <Menu mnemonicParsing="false" text="Clientes">
-                    <items>
-                        <MenuItem mnemonicParsing="false" 
-                                  onAction="#handleBtnMenuClientesAction"
-                                  text="Gerenciador" fx:id="btnMenuClientes"/>
-                    </items>
-              </Menu>
-              <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                    </items>
-              </Menu>
-            </menus>
-        </MenuBar>
-    </top>
+<BorderPane styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.MainController">
+  <stylesheets>
+    <URL value="@fxmlmain.css" />
+  </stylesheets>
+  <top>
+    <MenuBar>
+      <menus>
+        <Menu mnemonicParsing="false" text="Produtos">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuProdutosAction" text="Gerenciador" fx:id="btnMenuProdutos" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Clientes">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuClientesAction" text="Gerenciador" fx:id="btnMenuClientes" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Usuários">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuUsuariosAction" text="Gerenciador" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+  </top>
 </BorderPane>
-

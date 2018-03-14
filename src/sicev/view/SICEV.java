@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import sicev.controller.ClientesController;
 import sicev.controller.MainController;
 import sicev.controller.ProdutosController;
+import sicev.controller.UsuarioController;
 
 /**
  *
@@ -71,6 +72,25 @@ public class SICEV extends Application {
             
             ClientesController produtos = 
                     (ClientesController) loadSceneOnStage("Clientes.fxml", newStage);
+            produtos.setApp(this);
+            
+            newStage.sizeToScene();
+            newStage.setResizable(false);
+            newStage.initOwner(mainStage);
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.showAndWait();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(SICEV.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void openUsuarios() {
+        try {
+            Stage newStage = new Stage();
+            
+            UsuarioController produtos = 
+                    (UsuarioController) loadSceneOnStage("Usuario.fxml", newStage);
             produtos.setApp(this);
             
             newStage.sizeToScene();

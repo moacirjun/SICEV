@@ -38,6 +38,11 @@ public class MainController implements Initializable {
         this.application.openClientes();
     }
     
+    @FXML
+    private void handleBtnMenuUsuariosAction (ActionEvent  event) {
+        this.application.openUsuarios();
+    }
+    
     /**
      * Initializes the controller class.
      * @param url
