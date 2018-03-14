@@ -5,28 +5,38 @@
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.MainController">
+<BorderPane prefHeight="498.0" prefWidth="731.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.MainController">
+  <left>
+    <ImageView fitHeight="474.0" fitWidth="842.6666459789332" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../../../../../Users/Moacir/Pictures/lol/ss18-banner.jpg" />
+      </image>
+    </ImageView>
+  </left>
   <stylesheets>
     <URL value="@fxmlmain.css" />
   </stylesheets>
   <top>
     <MenuBar>
       <menus>
-        <Menu mnemonicParsing="false" text="Produtos">
+        <Menu mnemonicParsing="false" text="Arquivo">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuProdutosAction" text="Gerenciador" fx:id="btnMenuProdutos" />
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuSairAction" text="Sair">
+              <accelerator>
+                <KeyCodeCombination alt="DOWN" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+            </MenuItem>
           </items>
         </Menu>
-        <Menu mnemonicParsing="false" text="Clientes">
+        <Menu mnemonicParsing="false" text="Cadastros">
           <items>
-            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuClientesAction" text="Gerenciador" fx:id="btnMenuClientes" />
-          </items>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Usuários">
-          <items>
-            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuUsuariosAction" text="Gerenciador" />
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuProdutosAction" text="Produtos" fx:id="btnMenuProdutos" />
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuClientesAction" text="Clientes" fx:id="btnMenuClientes" />
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuUsuariosAction" text="Usuários" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

@@ -16,7 +16,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sicev.DAO.DaoUsuario;
 import sicev.controller.ClientesController;
+import sicev.controller.LoginController;
 import sicev.controller.MainController;
 import sicev.controller.ProdutosController;
 import sicev.controller.UsuarioController;
@@ -33,9 +35,10 @@ public class SICEV extends Application {
     public void start(Stage primaryStage) throws Exception {
         mainStage = primaryStage;
         mainStage.setTitle("SICEV");
-        mainStage.setMaximized(true);
+        mainStage.setResizable(false); 
         
-        gotoMainPage();
+//        gotoMainPage();
+        gotoLogin();
         
         primaryStage.show();
     }
@@ -45,6 +48,16 @@ public class SICEV extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    public boolean UserLogging (String userName, String UserPass) {
+        if ( DaoUsuario.autenticaUsuario(userName, UserPass) ) {
+            gotoMainPage();
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     public void openProdutos() {
@@ -106,8 +119,18 @@ public class SICEV extends Application {
     
     private void gotoMainPage() {
         try {
-            MainController main = (MainController) loadSceneOnStage("Main.fxml");
+            MainController main = (MainController) replaceSceneContent("Main.fxml");
+            mainStage.setMaximized(true);
             main.setApp(this);
+        } catch (Exception ex) {
+            Logger.getLogger(SICEV.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void gotoLogin() {
+        try {
+            LoginController login = (LoginController) replaceSceneContent("Login.fxml");
+            login.setApp(this);
         } catch (Exception ex) {
             Logger.getLogger(SICEV.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -130,6 +153,23 @@ public class SICEV extends Application {
         } 
         Scene scene = new Scene(page);
         stage.setScene(scene);
+        return (Initializable) loader.getController();
+    }
+    
+    private Initializable replaceSceneContent(String fxml) throws Exception {
+        FXMLLoader loader = new FXMLLoader();
+        InputStream in = SICEV.class.getResourceAsStream(fxml);
+        loader.setBuilderFactory(new JavaFXBuilderFactory());
+        loader.setLocation(SICEV.class.getResource(fxml));
+        Parent page;
+        try {
+            page = (Parent) loader.load(in);
+        } finally {
+            in.close();
+        } 
+        Scene scene = new Scene(page);
+        mainStage.setScene(scene);
+        mainStage.sizeToScene();
         return (Initializable) loader.getController();
     }
     

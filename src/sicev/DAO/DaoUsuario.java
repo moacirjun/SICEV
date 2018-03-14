@@ -73,8 +73,8 @@ public class DaoUsuario extends ConnectionPostgreSQL {
         
         try {
             this.conectar();
-            this.executarSQL("SELECT * FROM tb_produto "
-                    + "WHERE pk_id_produto = '" + pUsuarioId + "'");
+            this.executarSQL("SELECT * FROM tb_usuario "
+                    + "WHERE pk_id_usuario = '" + pUsuarioId + "'");
             
             while ( this.getResultSet().next() ) {
                 modelUsuario.setId(this.getResultSet().getInt("pk_id_usuario"));
@@ -115,6 +115,27 @@ public class DaoUsuario extends ConnectionPostgreSQL {
         }
         
         return listaUsuarios;
+    }
+    
+    public static boolean autenticaUsuario (String userName, String userPass) {
+        
+        ConnectionPostgreSQL tempCon = new ConnectionPostgreSQL();
+        
+        try {
+            tempCon.conectar();
+            tempCon.executarSQL("SELECT pk_id_usuario FROM tb_usuario "
+                    + "WHERE usu_login = '" + userName + "'" + " AND "
+                            + "usu_senha = '" + userPass + "'");
+            
+            return tempCon.getResultSet().next();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erro ao autenticar usuario. MSG: "+e.getMessage());
+            return false;
+        } finally {
+            tempCon.fecharConexao();
+        }
     }
 
 }

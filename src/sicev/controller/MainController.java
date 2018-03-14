@@ -43,6 +43,11 @@ public class MainController implements Initializable {
         this.application.openUsuarios();
     }
     
+    @FXML
+    private void handleBtnMenuSairAction (ActionEvent  event) {
+        System.exit(0);
+    }
+    
     /**
      * Initializes the controller class.
      * @param url
