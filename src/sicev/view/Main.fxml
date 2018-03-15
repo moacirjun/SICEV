@@ -5,18 +5,10 @@
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 
 <BorderPane prefHeight="498.0" prefWidth="731.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.MainController">
-  <left>
-    <ImageView fitHeight="474.0" fitWidth="842.6666459789332" pickOnBounds="true" preserveRatio="true">
-      <image>
-        <Image url="@../../../../../Users/Moacir/Pictures/lol/ss18-banner.jpg" />
-      </image>
-    </ImageView>
-  </left>
   <stylesheets>
     <URL value="@fxmlmain.css" />
   </stylesheets>
