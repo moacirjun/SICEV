@@ -112,23 +112,44 @@ public class VendaController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         
         carregarVendas();
-        carregarClientes();
-        carregarProdutos();
+        carregarCmbBoxClientes();
+        carregarCmbBoxProdutos();
         
+        definirBindsDeControle();
+        definirRegraEstadoBotoes();
+        definirRegraEstadoContainers();
+        
+        definirBindsCampos();
+        definirRegraAutoPreenchimentoCamposCliente();
+        definirRegraAutoPreenchimentoCamposProduto();
+        
+        definirMecanismoPesquisaVendas();
+        
+        carregarProdutosDaVenda();
+        
+        setStatusTelaExibir();
+    }
+    
+    public void setApp(SICEV application) {
+        this.application = application;
+    }
+    
+    private void definirBindsDeControle() {
         tableSelectionIsNull.bind( tabelaVendas.getSelectionModel().selectedItemProperty().isNull() );
         btnNovoSelected.bind( btnNovo.selectedProperty() );
         btnEditarSelected.bind( btnEditar.selectedProperty() );
-        
-        //Regra dos estados dos botões
+    }
+
+    private void definirRegraEstadoBotoes() {
         btnNovo.disableProperty().bind(btnEditarSelected);
         btnEditar.disableProperty().bind(tableSelectionIsNull.or(btnNovoSelected));
         btnExcluir.disableProperty().bind(tableSelectionIsNull.
                 or(btnNovoSelected).or(btnEditarSelected));
-        
         btnCancelar.visibleProperty().bind( btnNovoSelected.or(btnEditarSelected) );
         btnSalvar.visibleProperty().bind(btnNovoSelected.or(btnEditarSelected) );
-        
-        //Regra dos estados dos containers da tela
+    }
+
+    private void definirRegraEstadoContainers() {
         paneCampos.disableProperty().bind(
                 ( btnNovoSelected.not() ).and(
                 ( btnEditarSelected.not() )));
@@ -141,9 +162,9 @@ public class VendaController implements Initializable{
                         setModelVendaBinds(new ModelVenda());
                     }
                 });
-        
-        
-        //Cria um bind bidirecional entre os campos e o objeto "modelVenda"
+    }
+
+    private void definirBindsCampos() {
         edtCodVenda.textProperty().bindBidirectional(
                 modelVenda.idVendaProperty(), new NumberStringConverter());
         
@@ -162,6 +183,11 @@ public class VendaController implements Initializable{
         edtCodProduto.textProperty().bindBidirectional(
                 modelProduto.idProdutoProperty(), new NumberStringConverter());
         
+        tabelaVendas.getSelectionModel().selectedItemProperty().
+                addListener(TableListener);
+    }
+
+    private void definirRegraAutoPreenchimentoCamposCliente() {
         modelVenda.idClienteProperty().addListener(
             (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
                 
@@ -185,6 +211,20 @@ public class VendaController implements Initializable{
                 }
             });
         
+        cmbCliente.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    int index = listaClientes.indexOf(newValue);
+                    
+                    if ( index != -1 ) {
+                        edtCodCliente.setText( String.valueOf(listaClientes.get(index).getIdCliente()) );
+                    }
+                    else {
+                        //edtCodCliente.clear();
+                    }
+                });
+    }
+    
+    private void definirRegraAutoPreenchimentoCamposProduto() {
         modelProduto.idProdutoProperty().addListener(
             (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
                 
@@ -208,18 +248,6 @@ public class VendaController implements Initializable{
                 }
             });
         
-        cmbCliente.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> {
-                    int index = listaClientes.indexOf(newValue);
-                    
-                    if ( index != -1 ) {
-                        edtCodCliente.setText( String.valueOf(listaClientes.get(index).getIdCliente()) );
-                    }
-                    else {
-                        //edtCodCliente.clear();
-                    }
-                });
-        
         cmbProduto.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     int index = listaTodosProdutos.indexOf(newValue);
@@ -231,15 +259,12 @@ public class VendaController implements Initializable{
                         //edtCodCliente.clear();
                     }
                 });
-        
-        //Bind automático dos campos ao selecionar uma linha na tabela
-        tabelaVendas.getSelectionModel().selectedItemProperty().
-                addListener(TableListener);
-        
-        //Set the filter Predicate whenever the filter changes.
+    }
+
+    private void definirMecanismoPesquisaVendas() {
         edtPesquisar.textProperty().addListener((observable, oldValue, newValue) -> {
             listaVendasFiltrada.setPredicate(venda -> {
-                // If filter text is empty, display all produtos.
+                
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
@@ -248,71 +273,39 @@ public class VendaController implements Initializable{
                 return true;
             });
         });
-        
-        listaTabelaProdsVenda = FXCollections.observableList( new ArrayList<>() );
-        tabelaProdsVenda.setItems(listaTabelaProdsVenda);
-        
-        //Configura a tela
-        setStatusTelaExibir();
-    }
-    
-    public void setApp(SICEV application) {
-        this.application = application;
     }
     
     public void carregarVendas() {
         listaVendas = FXCollections.observableList(getAllvendas());
-        
-        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
         listaVendasFiltrada = new FilteredList<>(listaVendas, p -> true);
-
-        // 2. Wrap the FilteredList in a SortedList. 
         SortedList<ModelVenda> sortedData = new SortedList<>(listaVendasFiltrada);
-
-        // 3. Bind the SortedList comparator to the TableView comparator.
         sortedData.comparatorProperty().bind(tabelaVendas.comparatorProperty());    
         
         //Remove o changeListener da tabela enquanto atualiza seus items
         tabelaVendas.getSelectionModel().selectedItemProperty().
                 removeListener(TableListener);
         
-        // 4. Add sorted (and filtered) data to the table.
         tabelaVendas.setItems(sortedData);
         
         tabelaVendas.getSelectionModel().selectedItemProperty().
                 addListener(TableListener);
     }
     
-    public void carregarClientes() {
-        listaClientes = FXCollections.observableList(daoCliente.getAllClientesDao());
-        
-        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
-        listaClientesFiltrada = new FilteredList<>(listaClientes, p -> true);
-
-        // 2. Wrap the FilteredList in a SortedList. 
-        SortedList<ModelClientes> sortedData = new SortedList<>(listaClientesFiltrada);
-
-        // 3. Bind the SortedList comparator to the TableView comparator.
-//        sortedData.comparatorProperty().bind(cmbCliente.comparatorProperty());    
-        
-        // 4. Add sorted (and filtered) data to the table.
-        cmbCliente.setItems(sortedData);
+    private void carregarProdutosDaVenda() {
+        listaTabelaProdsVenda = FXCollections.observableList(new ArrayList<>());
+        tabelaProdsVenda.setItems(listaTabelaProdsVenda);
     }
     
-    public void carregarProdutos() {
-        listaTodosProdutos = FXCollections.observableList(daoProduto.getAllProdutosDao());
-        
-        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
-        listaTodosProdutosFiltrada = new FilteredList<>(listaTodosProdutos, p -> true);
-
-        // 2. Wrap the FilteredList in a SortedList. 
-        SortedList<ModelProdutos> sortedData = new SortedList<>(listaTodosProdutosFiltrada);
-        
-        // 3. Bind the SortedList comparator to the TableView comparator.
-//        sortedData.comparatorProperty().bind(tabelaVendas.comparatorProperty());    
-        
-        // 4. Add sorted (and filtered) data to the table.
-        cmbProduto.setItems(sortedData);
+    public void carregarCmbBoxClientes() {
+        listaClientes = FXCollections.observableList(
+                daoCliente.getAllClientesDao());
+        cmbCliente.setItems(listaClientes);
+    }
+    
+    public void carregarCmbBoxProdutos() {
+        listaTodosProdutos = FXCollections.observableList(
+                daoProduto.getAllProdutosDao());
+        cmbProduto.setItems(listaTodosProdutos);
     }
     
     private void setModelVendaBinds (ModelVenda currentVenda) {
@@ -325,14 +318,17 @@ public class VendaController implements Initializable{
             modelVenda.descontoProperty().bind(currentVenda.descontoProperty());
         } 
         else {
-            modelVenda.idVendaProperty().unbind();
-            modelVenda.idClienteProperty().unbind();
-            modelVenda.dataVendaProperty().unbind();
-            modelVenda.valorTotalProperty().unbind();
-            modelVenda.valorProperty().unbind();
-            modelVenda.descontoProperty().unbind();
-            
+            unsetModelVendaBinds();
         }
+    }
+    
+    private void unsetModelVendaBinds() {
+        modelVenda.idVendaProperty().unbind();
+        modelVenda.idClienteProperty().unbind();
+        modelVenda.dataVendaProperty().unbind();
+        modelVenda.valorTotalProperty().unbind();
+        modelVenda.valorProperty().unbind();
+        modelVenda.descontoProperty().unbind();
     }
     
     /**
@@ -350,6 +346,19 @@ public class VendaController implements Initializable{
     private void setStatusTelaExibir (int tableRowIndex) {
         btnNovo.setSelected(false);
         btnEditar.setSelected(false);
+        
+        selecionarLinhaTabela(tableRowIndex);
+        
+        tabelaVendas.requestFocus();
+        
+        setBindModelVendaLinhaAtual();
+
+        //Devolve os eventos padrões dos botões Editar e Novo
+        btnNovo.setOnAction((e) -> {handleBtnNovoAction(e);});
+        btnEditar.setOnAction((e) -> {handleBtEditarAction(e);});
+    }
+    
+    private void selecionarLinhaTabela(int tableRowIndex) {
         switch (tableRowIndex) {
             case -2:
                 tabelaVendas.getSelectionModel().selectLast();
@@ -361,24 +370,18 @@ public class VendaController implements Initializable{
                 tabelaVendas.getSelectionModel().select(tableRowIndex);
                 break;
         }
-        
-        tabelaVendas.requestFocus();
-        
-        /**
-         * faz um bind com a linha atual da tabela, caso o evento ChangeLister
-         * da tabela não seja invocado
-         */        
-        setModelVendaBinds( tabelaVendas.getSelectionModel().getSelectedItem() );
+    }
 
-        //Devolve os eventos padrões dos botões Editar e Novo
-        btnNovo.setOnAction((e) -> {handleBtnNovoAction(e);});
-        btnEditar.setOnAction((e) -> {handleBtEditarAction(e);});
+    private void setBindModelVendaLinhaAtual() {
+        setModelVendaBinds(tabelaVendas.getSelectionModel().getSelectedItem());
     }
     
     private void cadastrarNovaVenda() {
         modelVenda.setDataVenda(LocalDate.now());
         
-        if ( salvarVenda(modelVenda) > 0 ) {
+        int idNovaVenda = salvarVenda(modelVenda);
+        if ( idNovaVenda > 0 ) {
+            modelVenda.setIdVenda(idNovaVenda);
             salvarProdutosDaVenda();
             showAlert(Alert.AlertType.INFORMATION, "Venda cadastrada com sucesso!");
             carregarVendas();
@@ -387,8 +390,8 @@ public class VendaController implements Initializable{
             showAlert(Alert.AlertType.WARNING, "Não foi possível cadastrar a venda");
         }
         
+        //TODO : Selecionar a linha certa depois de alterar uma venda
         setStatusTelaExibir(-2);
-        setModelVendaBinds(tabelaVendas.getSelectionModel().getSelectedItem());
     }
     
     private void salvarProdutosDaVenda() {
@@ -455,52 +458,42 @@ public class VendaController implements Initializable{
     @FXML
     private void handleBtnNovoAction (ActionEvent event) {        
         
-        //passa um objeto ModelUsuario vazio para limpar os campos
-        setModelVendaBinds( new ModelVenda() );
+        limparCampos();
         
-        //Retira o bind do modelUsuario com esse ModelUSuario vazio passado anteriormente
-        setModelVendaBinds(null);
+        //Necessário para que seja possível alterar os campos
+        unsetModelVendaBinds();
         
         //Comfiguração dos componentes da tela
         edtCodCliente.requestFocus();
-        
-        //No próximo click o botao executa a ação "Cancelar"
         btnNovo.setOnAction((e) -> { handleBtnCancelarAction(e); });
+    }
+    
+    private void limparCampos() {
+        setModelVendaBinds(new ModelVenda());
     }
     
     @FXML
     private void handleBtEditarAction (ActionEvent event) {
         //Retira o bind do modelUsuario para que seja possível a alteração
-        setModelVendaBinds(null);
+        unsetModelVendaBinds();
         
+        //Comfiguração dos componentes da tela
         edtCodCliente.requestFocus();
         edtCodCliente.selectEnd();
-        
-        //No próximo click o botao executa a ação "Cancelar"
         btnEditar.setOnAction((e) -> { handleBtnCancelarAction(e); });
     }
     
     @FXML
     private void handleBtnExcluirAction (ActionEvent event) {
         
-        if (confirmAlert("Confirmar a exclusão da venda?") == ButtonBar.ButtonData.YES) {
+        if (confirmarExclusao()) {
             
             int newIndex = 0;
             
             if ( excluirVenda(tabelaVendas.getSelectionModel().
                     getSelectedItem().getIdVenda()) ) {
                 
-                //Guarda o index da linha anterior ou posterior à linha excluída
-                int curIndex = tabelaVendas.getSelectionModel().getSelectedIndex();
-                if ( curIndex ==  0) {
-                    tabelaVendas.getSelectionModel().selectNext();
-                }
-                else {
-                    tabelaVendas.getSelectionModel().selectPrevious();
-                }
-                newIndex = tabelaVendas.getSelectionModel().getSelectedIndex();
-                
-                //Recarrega os produtos do banco
+                newIndex = getPreviousOrNextRowIndex();
                 carregarVendas();
                 
                 showAlert(Alert.AlertType.INFORMATION, "Venda excuída com sucesso!");
@@ -512,6 +505,16 @@ public class VendaController implements Initializable{
             //Deixa a tela no mode de exibição
             setStatusTelaExibir(newIndex);
         }
+    }
+    
+    private int getPreviousOrNextRowIndex() {
+        if ( tabelaVendas.getSelectionModel().isSelected(0) ) {
+            tabelaVendas.getSelectionModel().selectNext();
+        }
+        else {
+            tabelaVendas.getSelectionModel().selectPrevious();
+        }
+        return tabelaVendas.getSelectionModel().getSelectedIndex();
     }
     
     @FXML
@@ -528,9 +531,8 @@ public class VendaController implements Initializable{
     
     @FXML
     private void handleBtnCancelarAction (ActionEvent event) {
-        //Retorna para p mode de exibição, e no produto selecionado na tabela
         setStatusTelaExibir( tabelaVendas.getSelectionModel().getSelectedIndex() );
-        setModelVendaBinds(tabelaVendas.getSelectionModel().getSelectedItem() );
+        setBindModelVendaLinhaAtual();
     }
     
     @FXML
@@ -564,6 +566,11 @@ public class VendaController implements Initializable{
         alert.show();
     }
     
+    private boolean confirmarExclusao() {
+        return confirmAlert("Você está certo de excluir essa venda?") == 
+                            ButtonBar.ButtonData.YES ;
+    } 
+     
     public ButtonBar.ButtonData confirmAlert(String texto) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("SICEV");

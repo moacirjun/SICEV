@@ -145,7 +145,7 @@ public class DaoProdutos extends ConnectionPostgreSQL{
             listaProdutos.forEach((produto) -> {
                 this.executarUpdateDeleteSQL("UPDATE tb_produto SET "
                     + "pro_estoque = " 
-                    + "(pro_estoque - '" + produto.getProQtde()+ "') "
+                    + "(pro_estoque - " + produto.getProQtde()+ ") "
                     + "WHERE pk_id_produto = '" + produto.getIdProduto() + "'");
             });
         } catch (Exception e) {
