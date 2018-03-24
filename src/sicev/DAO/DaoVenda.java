@@ -79,8 +79,12 @@ public class DaoVenda extends ConnectionPostgreSQL{
         
         try {
             this.conectar();
-            this.executarSQL("SELECT * FROM tb_venda "
-                    + "WHERE pk_id_venda = '" + idVenda + "'");
+            this.executarSQL(
+                    "SELECT tb_venda.*, tb_cliente.cli_nome as cli_nome " +
+                    "FROM tb_venda " +
+                    "LEFT JOIN tb_cliente " + 
+                    "ON tb_venda.fk_id_cliente = tb_cliente.pk_id_cliente " +
+                    "WHERE pk_id_venda = '" + idVenda + "'");
             
             while ( this.getResultSet().next() )  {
                 modelVenda.setIdVenda(this.getResultSet().getInt("pk_id_venda"));
@@ -89,6 +93,7 @@ public class DaoVenda extends ConnectionPostgreSQL{
                 modelVenda.setValorTotal(this.getResultSet().getDouble("vend_valor_total"));
                 modelVenda.setValor(this.getResultSet().getDouble("vend_valor"));
                 modelVenda.setDesconto(this.getResultSet().getDouble("vend_desconto"));
+                modelVenda.setNomeCliente(this.getResultSet().getString("cli_nome"));
             }
             
         } catch (Exception e)  {
@@ -106,16 +111,22 @@ public class DaoVenda extends ConnectionPostgreSQL{
         
         try {
             this.conectar();
-            this.executarSQL("SELECT * FROM tb_venda ORDER BY pk_id_venda LIMIT 1000");
+            this.executarSQL(
+                    "SELECT tb_venda.*, tb_cliente.cli_nome as cli_nome " +
+                    "FROM tb_venda " +
+                    "LEFT JOIN tb_cliente " + 
+                    "ON tb_venda.fk_id_cliente = tb_cliente.pk_id_cliente " +
+                    "LIMIT 1000");
             
             while ( this.getResultSet().next() ) {
                 ModelVenda modelVenda = new ModelVenda();
-                modelVenda.setIdVenda(this.getResultSet().getInt("pk_id_vendae"));
+                modelVenda.setIdVenda(this.getResultSet().getInt("pk_id_venda"));
                 modelVenda.setIdCliente(this.getResultSet().getInt("fk_id_cliente"));
                 modelVenda.setDataVenda(this.getResultSet().getDate("vend_data_venda").toLocalDate());
                 modelVenda.setValorTotal(this.getResultSet().getDouble("vend_valor_total"));
                 modelVenda.setValor(this.getResultSet().getDouble("vend_valor"));
                 modelVenda.setDesconto(this.getResultSet().getDouble("vend_desconto"));
+                modelVenda.setNomeCliente(this.getResultSet().getString("cli_nome"));
                 listaVendas.add(modelVenda);
             }
         } catch (Exception e) {

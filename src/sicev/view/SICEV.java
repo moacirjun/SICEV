@@ -22,6 +22,7 @@ import sicev.controller.LoginController;
 import sicev.controller.MainController;
 import sicev.controller.ProdutosController;
 import sicev.controller.UsuarioController;
+import sicev.controller.VendaController;
 
 /**
  *
@@ -117,10 +118,30 @@ public class SICEV extends Application {
         }
     }
     
+    public void openVendas() {
+        try {
+            Stage newStage = new Stage();
+            
+            VendaController vendas = 
+                    (VendaController) loadSceneOnStage("Venda.fxml", newStage);
+            vendas.setApp(this);
+            
+            newStage.sizeToScene();
+            newStage.setResizable(false);
+            newStage.initOwner(mainStage);
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.showAndWait();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(SICEV.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     private void gotoMainPage() {
         try {
             MainController main = (MainController) replaceSceneContent("Main.fxml");
-            mainStage.setMaximized(true);
+//            mainStage.setMaximized(true);
+            mainStage.centerOnScreen();
             main.setApp(this);
         } catch (Exception ex) {
             Logger.getLogger(SICEV.class.getName()).log(Level.SEVERE, null, ex);

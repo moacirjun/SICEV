@@ -8,6 +8,7 @@ package sicev.DAO;
 import java.util.ArrayList;
 import sicev.connection.ConnectionPostgreSQL;
 import sicev.model.ModelProdutos;
+import sicev.model.ModelVendaProduto;
 
 /**
  *
@@ -135,5 +136,23 @@ public class DaoProdutos extends ConnectionPostgreSQL{
         }
         
         return listaProdutos;
+    }
+
+    public void SalvarAlteracaoEstoqueDao(ArrayList<ModelVendaProduto> listaProdutos) {
+        try {
+            this.conectar();
+            
+            listaProdutos.forEach((produto) -> {
+                this.executarUpdateDeleteSQL("UPDATE tb_produto SET "
+                    + "pro_estoque = " 
+                    + "(pro_estoque - '" + produto.getProQtde()+ "') "
+                    + "WHERE pk_id_produto = '" + produto.getIdProduto() + "'");
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erro ao atualizar produto. MSG:"+e.getMessage());
+        } finally {
+            this.fecharConexao();
+        }       
     }
 }

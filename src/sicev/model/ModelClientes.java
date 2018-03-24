@@ -216,6 +216,9 @@ public class ModelClientes {
     public StringProperty telefoneProperty() {
         return cliTel;
     }
-
     
+    @Override
+    public String toString() {
+        return String.valueOf(this.getIdCliente()) + " - " + this.getNome();
+    }
 }

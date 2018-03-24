@@ -44,6 +44,11 @@ public class MainController implements Initializable {
     }
     
     @FXML
+    private void btnVendasAction (ActionEvent  event) {
+        this.application.openVendas();
+    }
+    
+    @FXML
     private void handleBtnMenuSairAction (ActionEvent  event) {
         System.exit(0);
     }

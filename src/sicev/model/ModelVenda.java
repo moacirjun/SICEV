@@ -12,6 +12,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
@@ -25,6 +27,7 @@ public class ModelVenda {
     private final DoubleProperty valorTotal = new SimpleDoubleProperty();
     private final DoubleProperty valor = new SimpleDoubleProperty();
     private final DoubleProperty desconto = new SimpleDoubleProperty();
+    private final StringProperty nomeCliente = new SimpleStringProperty();
 
     public int getIdVenda() {
         return idVenda.get();
@@ -96,5 +99,17 @@ public class ModelVenda {
 
     public DoubleProperty descontoProperty() {
         return desconto;
+    }
+    
+    public String getNomeCliente() {
+        return nomeCliente.get();
+    }
+
+    public void setNomeCliente(String value) {
+        nomeCliente.set(value);
+    }
+
+    public StringProperty nomeClienteProperty() {
+        return nomeCliente;
     }
 }

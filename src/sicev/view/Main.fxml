@@ -26,9 +26,10 @@
         </Menu>
         <Menu mnemonicParsing="false" text="Cadastros">
           <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuUsuariosAction" text="Usuários" />
             <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuProdutosAction" text="Produtos" fx:id="btnMenuProdutos" />
             <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuClientesAction" text="Clientes" fx:id="btnMenuClientes" />
-            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuUsuariosAction" text="Usuários" />
+            <MenuItem mnemonicParsing="false" onAction="#btnVendasAction" text="Vendas" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

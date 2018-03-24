@@ -5,7 +5,6 @@
  */
 package sicev.model;
 
-import java.time.LocalDate;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -24,6 +23,8 @@ public class ModelVendaProduto {
     private final IntegerProperty idProduto = new SimpleIntegerProperty();
     private final DoubleProperty proValor = new SimpleDoubleProperty();
     private final DoubleProperty proQtde = new SimpleDoubleProperty();
+    private final ObjectProperty<ModelProdutos> produto = 
+            new SimpleObjectProperty<>();
 
     public int getIdVendaProduto() {
         return idVendaProduto.get();
@@ -83,5 +84,17 @@ public class ModelVendaProduto {
 
     public DoubleProperty proQtdeProperty() {
         return proQtde;
+    }
+    
+    public ModelProdutos getProduto() {
+        return produto.get();
+    }
+
+    public void setProduto(ModelProdutos value) {
+        produto.set(value);
+    }
+
+    public ObjectProperty produtoProperty() {
+        return produto;
     }
 }

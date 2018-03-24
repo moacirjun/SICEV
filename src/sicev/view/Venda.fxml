@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane id="AnchorPane" prefHeight="540.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.VendaController">
+  <center>
+    <VBox prefHeight="540.0" prefWidth="775.9999000000025">
+      <GridPane fx:id="paneCampos" minHeight="-1.0" prefHeight="466.0" prefWidth="693.0">
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+          <Label text="Cod. Venda" />
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+          <TextField id="edtCodigo" fx:id="edtCodVenda" disable="true" prefWidth="200.0" />
+        </VBox>
+        <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="0">
+          <padding>
+            <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
+          </padding>
+          <Label text="Cliente" />
+          <ComboBox fx:id="cmbCliente" editable="false" maxHeight="-1.0" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+            <items>
+              <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Item 1" />
+                <String fx:value="Item 2" />
+                <String fx:value="Item 3" />
+              </FXCollections>
+            </items>
+          </ComboBox>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+          <Label text="Cod. Produto" />
+          <TextField id="edtCodigo" fx:id="edtCodProduto" disable="false" prefWidth="200.0" />
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+          <Label text="Produto" />
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+          <ComboBox fx:id="cmbProduto" editable="false" maxHeight="-1.0" maxWidth="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+            <items>
+              <FXCollections fx:factory="observableArrayList">
+                <String fx:value="Item 1" />
+                <String fx:value="Item 2" />
+                <String fx:value="Item 3" />
+              </FXCollections>
+            </items>
+          </ComboBox>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+          <Label text="Qtde" />
+          <TextField id="edtCodigo" fx:id="edtQtde" disable="false" prefWidth="200.0" />
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+        <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+          <children>
+            <Button fx:id="btnAddProduto" mnemonicParsing="false" onAction="#handleBtnAddProduto" text="Adicionar">
+              <graphic>
+                <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/icons8_Plus_30px.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+              <HBox.margin>
+                <Insets left="5.0" top="20.0" />
+              </HBox.margin>
+            </Button>
+          </children>
+        </HBox>
+        <TableView fx:id="tabelaProdsVenda" maxWidth="-1.0" prefHeight="291.0" prefWidth="434.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="3">
+          <columns>
+            <TableColumn maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Cod. Prod" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="idProduto" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="Produto" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="proNome" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="82.0" minWidth="82.0" prefWidth="82.0" text="Qtde" >
+                <cellValueFactory>
+                    <PropertyValueFactory property="quantidade" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Valor Unit." >
+                <cellValueFactory>
+                    <PropertyValueFactory property="proValor" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="90.0" minWidth="90.0" prefWidth="90.0" text="Total">
+                <cellValueFactory>
+                    <PropertyValueFactory property="valorTotal" />
+                </cellValueFactory>
+            </TableColumn>
+          </columns>
+          <GridPane.margin>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </GridPane.margin>
+        </TableView>
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
+          <Label text="Desconto (R$)" />
+          <TextField id="edtCodigo" fx:id="edtDesconto" disable="false" prefWidth="200.0" />
+              
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="5">
+          <Label text="Total (R$)" />
+          <TextField id="edtCodigo" fx:id="edtValorTotal" disable="false" prefWidth="200.0" />
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+        <Separator prefHeight="9.0" prefWidth="683.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="1" GridPane.valignment="BOTTOM" />
+        <Separator prefWidth="200.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+        <Separator prefWidth="200.0" GridPane.columnIndex="0" GridPane.columnSpan="4" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="0">
+          <Label text="Cod. cliente" />
+          <TextField id="edtCodigo" fx:id="edtCodCliente" disable="false" prefWidth="200.0" />
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+        <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+          <Label text="Valor Líquido (R$)" />
+          <TextField id="edtCodigo" fx:id="edtValorLiq" disable="false" prefWidth="200.0" />
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+        <columnConstraints>
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="188.0" minWidth="10.0" prefWidth="87.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="284.0" minWidth="10.0" prefWidth="240.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+        </columnConstraints>
+        <padding>
+          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        </padding>
+        <rowConstraints>
+          <RowConstraints maxHeight="47.0" minHeight="-Infinity" prefHeight="47.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="47.0" minHeight="-Infinity" prefHeight="47.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="274.0" prefHeight="254.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="47.0" minHeight="-Infinity" prefHeight="47.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <VBox.margin>
+          <Insets />
+        </VBox.margin>
+      </GridPane>
+      <HBox alignment="TOP_CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="10.0">
+        <Button fx:id="btnSalvar" mnemonicParsing="false" onAction="#handleBtnSalvarAction" prefWidth="94.0" text="Salvar">
+          <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../images/icons8_Save_30px.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#handleBtnCancelarAction" prefWidth="94.0" text="Cancelar">
+          <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../images/icons8_Cancel_30px.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <padding>
+          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+        </padding>
+        <VBox.margin>
+          <Insets bottom="49.0" />
+        </VBox.margin>
+      </HBox>
+    </VBox>
+  </center>
+  <left>
+    <VBox fx:id="tableContainer" prefHeight="540.0" prefWidth="507.0">
+      <VBox id="tableContainer" prefHeight="491.0" prefWidth="424.0">
+        <HBox minHeight="-Infinity" minWidth="-1.0" prefHeight="57.0" prefWidth="-1.0">
+          <VBox prefHeight="-1.0" prefWidth="312.0">
+            <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+            <Label text="Pesquisar" />
+            <TextField fx:id="edtPesquisar" prefWidth="200.0" />
+          </VBox>
+          <VBox prefHeight="57.0">
+            <padding>
+              <Insets bottom="5.0" left="5.0" right="5.0" top="22.0" />
+            </padding>
+            <Button fx:id="btnRemoveFiltro" onAction="#handleBtnRemoveFiltro" prefHeight="22.0" text="Limpar" />
+          </VBox>
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+          <VBox.margin>
+            <Insets />
+          </VBox.margin>
+        </HBox>
+        <TableView fx:id="tabelaVendas" prefHeight="-1.0" prefWidth="-1.0">
+          <columns>
+            <TableColumn maxWidth="75.0" minWidth="75.0" prefWidth="75.0" text="Código">
+              <cellValueFactory>
+                <PropertyValueFactory property="idVenda" />
+              </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="315.0" minWidth="315.0" prefWidth="315.0" text="Cliente">
+              <cellValueFactory>
+                <PropertyValueFactory property="nomeCliente" />
+              </cellValueFactory>
+            </TableColumn>
+            <TableColumn maxWidth="95.0" minWidth="95.0" prefWidth="95.0" text="Data">
+              <cellValueFactory>
+                <PropertyValueFactory property="dataVenda" />
+              </cellValueFactory>
+            </TableColumn>
+          </columns>
+          <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+          </VBox.margin>
+        </TableView>
+      </VBox>
+      <HBox alignment="BOTTOM_CENTER" prefHeight="47.0" prefWidth="424.0" spacing="10.0">
+        <ToggleButton fx:id="btnNovo" mnemonicParsing="false" onAction="#handleBtnNovoAction" prefWidth="94.0" text="Novo">
+          <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../images/icons8_Plus_30px.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </ToggleButton>
+        <ToggleButton fx:id="btnEditar" mnemonicParsing="false" onAction="#handleBtEditarAction" prefWidth="94.0" text="Editar">
+          <graphic>
+            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../images/icons8_Edit_30px.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </ToggleButton>
+        <Button fx:id="btnExcluir" mnemonicParsing="false" onAction="#handleBtnExcluirAction" prefWidth="94.0" text="Excuir">
+          <graphic>
+            <ImageView fitHeight="23.9998779296875" fitWidth="23.9998779296875" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@../images/icons8_Delete_30px.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <padding>
+          <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+        </padding>
+      </HBox>
+    </VBox>
+  </left>
+  <stylesheets>
+    <URL value="@usuario.css" />
+  </stylesheets>
+</BorderPane>

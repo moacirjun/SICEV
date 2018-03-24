@@ -77,4 +77,9 @@ public class ModelProdutos {
     public IntegerProperty proEstoqueMinProperty() {
         return proEstoqueMin;
     }
+    
+    @Override
+    public String toString() {
+        return String.valueOf(this.getIdProduto()) + " - " + this.getProNome();
+    }
 }

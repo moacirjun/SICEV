@@ -150,4 +150,33 @@ public class DaoVendaProduto extends ConnectionPostgreSQL{
         
         return listaVendaProds;
     }
+    
+    public static boolean salvaProdutosDaVendaDao(ArrayList<ModelVendaProduto> listaProdutos) {
+        ConnectionPostgreSQL tempCon = new ConnectionPostgreSQL();
+        tempCon.conectar();
+        
+        try {
+            listaProdutos.forEach((produto) -> {
+                
+                tempCon.insertSQL("INSERT INTO tb_venda_produto ("
+                        + "fk_id_venda,"
+                        + "fk_id_produto,"
+                        + "vend_pro_valor,"
+                        + "vend_pro_qtd) VALUES ("
+                        + "'" + produto.getIdVenda()+ "',"
+                        + "'" + produto.getIdProduto()+ "',"
+                        + "'" + produto.getProValor()+ "',"
+                        + "'" + produto.getProQtde()+ "')"
+                        + " RETURNING pk_id_venda_produto; ");
+            });
+            
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Erro ao inserir produto da venda. MSG:"+e.getMessage());
+            return false;
+        } finally {
+            tempCon.fecharConexao();
+        }        
+    }
 }
