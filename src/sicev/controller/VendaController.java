@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -34,7 +36,6 @@ import javafx.util.converter.NumberStringConverter;
 import sicev.DAO.DaoClientes;
 import sicev.DAO.DaoProdutos;
 import sicev.DAO.DaoVenda;
-import sicev.DAO.DaoVendaProduto;
 import sicev.model.ModelClientes;
 import sicev.model.ModelProdutos;
 import sicev.model.ModelVenda;
@@ -74,6 +75,9 @@ public class VendaController implements Initializable{
     private final DaoVenda daoVenda = new DaoVenda();
     private final ModelVenda modelVenda = new ModelVenda();
     
+    private final VendaProdutoController vendaProdutoController = 
+                    new VendaProdutoController();
+    
     private final DaoClientes daoCliente = new DaoClientes();
     private final ModelClientes modelCliente = new ModelClientes();
     
@@ -94,19 +98,24 @@ public class VendaController implements Initializable{
     private FilteredList<ModelProdutos> listaTodosProdutosFiltrada;
     
     private ObservableList<ProdutosDaVenda> listaTabelaProdsVenda;
+    private final DoubleProperty valorTotal = new SimpleDoubleProperty();
     
     private SICEV application;
     
-    /**
-     * Expressão lambda que implementa o bind dos campos com a linha selecionada
-     * da tabela
-     */
     final ChangeListener<ModelVenda> TableListener = 
         (ObservableValue<? extends ModelVenda> observable, 
                 ModelVenda oldValue, ModelVenda newValue) -> {
             
-            setModelVendaBinds(newValue);
+            atualizarDadosVenda(newValue);
         };
+    
+    final ChangeListener<Number> calcularValorTotal = 
+        (ObservableValue<? extends Number> observable, 
+                Number oldValue, Number newValue) -> {
+            
+            modelVenda.setValorTotal(modelVenda.getValor() - modelVenda.getDesconto());
+        };
+    
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -124,8 +133,6 @@ public class VendaController implements Initializable{
         definirRegraAutoPreenchimentoCamposProduto();
         
         definirMecanismoPesquisaVendas();
-        
-        carregarProdutosDaVenda();
         
         setStatusTelaExibir();
     }
@@ -251,7 +258,6 @@ public class VendaController implements Initializable{
         cmbProduto.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     int index = listaTodosProdutos.indexOf(newValue);
-                    
                     if ( index != -1 ) {
                         edtCodProduto.setText( String.valueOf(listaTodosProdutos.get(index).getIdProduto()) );
                     }
@@ -292,7 +298,12 @@ public class VendaController implements Initializable{
     }
     
     private void carregarProdutosDaVenda() {
-        listaTabelaProdsVenda = FXCollections.observableList(new ArrayList<>());
+        ArrayList<ModelVendaProduto> listaVendaProduto = 
+                vendaProdutoController.getAllProdutosByIdVendaDao(
+                                                    modelVenda.getIdVenda());
+        
+        listaTabelaProdsVenda = FXCollections.observableList(
+                ProdutosDaVendaController.getListaProdutosDaVenda(listaVendaProduto));
         tabelaProdsVenda.setItems(listaTabelaProdsVenda);
     }
     
@@ -346,12 +357,14 @@ public class VendaController implements Initializable{
     private void setStatusTelaExibir (int tableRowIndex) {
         btnNovo.setSelected(false);
         btnEditar.setSelected(false);
+        removerCalculoAutomaticoValorTotal();
         
         selecionarLinhaTabela(tableRowIndex);
         
         tabelaVendas.requestFocus();
         
-        setBindModelVendaLinhaAtual();
+        AtualizarDadosVendaLinhaAtualTabela();
+        limparCamposProduto();
 
         //Devolve os eventos padrões dos botões Editar e Novo
         btnNovo.setOnAction((e) -> {handleBtnNovoAction(e);});
@@ -372,8 +385,9 @@ public class VendaController implements Initializable{
         }
     }
 
-    private void setBindModelVendaLinhaAtual() {
+    private void AtualizarDadosVendaLinhaAtualTabela() {
         setModelVendaBinds(tabelaVendas.getSelectionModel().getSelectedItem());
+        carregarProdutosDaVenda();
     }
     
     private void cadastrarNovaVenda() {
@@ -395,7 +409,7 @@ public class VendaController implements Initializable{
     }
     
     private void salvarProdutosDaVenda() {
-        DaoVendaProduto.salvaProdutosDaVendaDao(getListaProdutosVenda());
+        vendaProdutoController.salvaProdutosDaVendaDao(getListaProdutosVenda());
     }
     
     private ArrayList<ModelVendaProduto> getListaProdutosVenda() {
@@ -459,6 +473,8 @@ public class VendaController implements Initializable{
     private void handleBtnNovoAction (ActionEvent event) {        
         
         limparCampos();
+        limparCamposProduto();
+        definirCalculoAutomaticoValorTotal();
         
         //Necessário para que seja possível alterar os campos
         unsetModelVendaBinds();
@@ -470,12 +486,15 @@ public class VendaController implements Initializable{
     
     private void limparCampos() {
         setModelVendaBinds(new ModelVenda());
+        listaTabelaProdsVenda = FXCollections.observableArrayList(new ArrayList<>());
+        tabelaProdsVenda.setItems(listaTabelaProdsVenda);
     }
     
     @FXML
     private void handleBtEditarAction (ActionEvent event) {
         //Retira o bind do modelUsuario para que seja possível a alteração
         unsetModelVendaBinds();
+        definirCalculoAutomaticoValorTotal();
         
         //Comfiguração dos componentes da tela
         edtCodCliente.requestFocus();
@@ -532,7 +551,7 @@ public class VendaController implements Initializable{
     @FXML
     private void handleBtnCancelarAction (ActionEvent event) {
         setStatusTelaExibir( tabelaVendas.getSelectionModel().getSelectedIndex() );
-        setBindModelVendaLinhaAtual();
+        AtualizarDadosVendaLinhaAtualTabela();
     }
     
     @FXML
@@ -553,6 +572,8 @@ public class VendaController implements Initializable{
         produtoDaVenda.setValorTotal(quantidade * produtoDaVenda.getProValor());
 
         listaTabelaProdsVenda.add(produtoDaVenda);
+        
+        calcularValorLiquidoVenda();
     }
     
     /* ====================================================================== */
@@ -581,5 +602,36 @@ public class VendaController implements Initializable{
                 new ButtonType("Não", ButtonBar.ButtonData.NO) );
         
         return alert.showAndWait().get().getButtonData();
+    }
+
+    private void atualizarDadosVenda(ModelVenda venda) {
+        setModelVendaBinds(venda);
+        carregarProdutosDaVenda();
+    }
+
+    private void limparCamposProduto() {
+        edtCodProduto.clear();
+        cmbProduto.getSelectionModel().clearSelection();
+        cmbProduto.setPromptText("");
+        edtQtde.clear();
+    }
+    
+    private void calcularValorLiquidoVenda() {
+        modelVenda.setValor(0);
+        
+        listaTabelaProdsVenda.forEach((produto) -> {
+            modelVenda.setValor(modelVenda.getValor() + 
+                    (produto.getQuantidade() * produto.getProValor()));
+        });
+    }
+
+    private void removerCalculoAutomaticoValorTotal() {
+        modelVenda.valorProperty().removeListener(calcularValorTotal);
+        modelVenda.descontoProperty().removeListener(calcularValorTotal);
+    }
+    
+    private void definirCalculoAutomaticoValorTotal() {
+        modelVenda.valorProperty().addListener(calcularValorTotal);
+        modelVenda.descontoProperty().addListener(calcularValorTotal);
     }
 }

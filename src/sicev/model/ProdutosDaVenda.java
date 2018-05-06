@@ -17,6 +17,10 @@ public class ProdutosDaVenda extends ModelProdutos {
     private final DoubleProperty quantidade = new SimpleDoubleProperty();
     private final DoubleProperty valorTotal = new SimpleDoubleProperty();
 
+    public ProdutosDaVenda() {
+        
+    }
+    
     public ProdutosDaVenda(ModelProdutos produto) {
         super.setIdProduto(produto.getIdProduto());
         super.setProNome(produto.getProNome());

@@ -7,6 +7,7 @@ package sicev.DAO;
 
 import java.util.ArrayList;
 import sicev.connection.ConnectionPostgreSQL;
+import sicev.model.ModelProdutos;
 import sicev.model.ModelVendaProduto;
 
 /**
@@ -123,22 +124,46 @@ public class DaoVendaProduto extends ConnectionPostgreSQL{
         return listaVendaProds;
     }
     
+    public ArrayList<ModelVendaProduto> getAllProdutosByIdVendaDao(ModelVendaProduto venda) {
+        return getAllProdutosByIdVendaDao(venda.getIdVenda());
+    }
+    
     public ArrayList<ModelVendaProduto> getAllProdutosByIdVendaDao(int idVenda) {
         ArrayList<ModelVendaProduto> listaVendaProds = new ArrayList<>();
         
         try {
             this.conectar();
-            this.executarSQL("SELECT * FROM tb_venda_produto "
-                    + "WHERE fk_id_venda = " + "'" + idVenda + "' "
+            this.executarSQL("SELECT tb_venda_produto.pk_id_venda_produto, "
+                    + "tb_venda_produto.fk_id_produto, "
+                    + "tb_venda_produto.fk_id_venda, "
+                    + "tb_venda_produto.vend_pro_qtd, "
+                    + "tb_produto.pro_nome, "
+                    + "tb_produto.pro_valor, "
+                    + "tb_produto.pro_estoque, "
+                    + "tb_produto.pro_estoque_min "
+                    + "FROM tb_venda_produto "
+                    + "LEFT JOIN tb_produto  "
+                    + "ON tb_venda_produto.fk_id_produto = tb_produto.pk_id_produto "
+                    + "WHERE fk_id_venda = " + "'" + idVenda + "' " 
                     + "ORDER BY pk_id_venda_produto");
             
             while ( this.getResultSet().next() ) {
+                
+                ModelProdutos produto = new ModelProdutos();
+                produto.setIdProduto(this.getResultSet().getInt("fk_id_produto"));
+                produto.setProNome(this.getResultSet().getString("pro_nome"));
+                produto.setProValor(this.getResultSet().getDouble("pro_valor"));
+                produto.setProEstoque(this.getResultSet().getInt("pro_estoque"));
+                produto.setProEstoqueMin(this.getResultSet().getInt("pro_estoque_min"));
+                
                 ModelVendaProduto modelVendaProd = new ModelVendaProduto();
                 modelVendaProd.setIdVendaProduto(this.getResultSet().getInt("pk_id_venda_produto"));
-                modelVendaProd.setIdVenda(this.getResultSet().getInt("pk_id_venda"));
-                modelVendaProd.setIdProduto(this.getResultSet().getInt("pk_id_produto"));
-                modelVendaProd.setProValor(this.getResultSet().getDouble("vend_pro_valor"));
+                modelVendaProd.setIdVenda(this.getResultSet().getInt("fk_id_venda"));
+                modelVendaProd.setIdProduto(this.getResultSet().getInt("fk_id_produto"));
+                modelVendaProd.setProValor(this.getResultSet().getDouble("pro_valor"));
                 modelVendaProd.setProQtde(this.getResultSet().getDouble("vend_pro_qtd"));
+                modelVendaProd.setProduto(produto);
+                
                 listaVendaProds.add(modelVendaProd);
             }
         } catch (Exception e) {
@@ -151,14 +176,13 @@ public class DaoVendaProduto extends ConnectionPostgreSQL{
         return listaVendaProds;
     }
     
-    public static boolean salvaProdutosDaVendaDao(ArrayList<ModelVendaProduto> listaProdutos) {
-        ConnectionPostgreSQL tempCon = new ConnectionPostgreSQL();
-        tempCon.conectar();
+    public boolean salvaProdutosDaVendaDao(ArrayList<ModelVendaProduto> listaProdutos) {
+        
         
         try {
+            this.conectar();
             listaProdutos.forEach((produto) -> {
-                
-                tempCon.insertSQL("INSERT INTO tb_venda_produto ("
+                this.insertSQL("INSERT INTO tb_venda_produto ("
                         + "fk_id_venda,"
                         + "fk_id_produto,"
                         + "vend_pro_valor,"
@@ -176,7 +200,7 @@ public class DaoVendaProduto extends ConnectionPostgreSQL{
             System.out.println("Erro ao inserir produto da venda. MSG:"+e.getMessage());
             return false;
         } finally {
-            tempCon.fecharConexao();
+            this.fecharConexao();
         }        
     }
 }

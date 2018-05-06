@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="498.0" prefWidth="731.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="sicev.controller.MainController">
+  <stylesheets>
+    <URL value="@fxmlmain.css" />
+  </stylesheets>
+  <top>
+    <MenuBar>
+      <menus>
+        <Menu mnemonicParsing="false" text="Arquivo">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuSairAction" text="Sair">
+              <accelerator>
+                <KeyCodeCombination alt="DOWN" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+              </accelerator>
+            </MenuItem>
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Cadastros">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuUsuariosAction" text="Usuários" />
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuProdutosAction" text="Produtos" fx:id="btnMenuProdutos" />
+            <MenuItem mnemonicParsing="false" onAction="#handleBtnMenuClientesAction" text="Clientes" fx:id="btnMenuClientes" />
+            <MenuItem mnemonicParsing="false" onAction="#btnVendasAction" text="Vendas" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+  </top>
+</BorderPane>
